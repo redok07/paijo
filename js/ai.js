@@ -3,6 +3,10 @@
 // Depends on: config.js, memory.js
 // ============================================
 
+const MIN_RETRY_TEMPERATURE = 0.2;
+const TEMPERATURE_REDUCTION = 0.2;
+const MAX_REPAIR_ATTEMPTS = 1;
+
 class PaijoAI {
   constructor() {
     this.chatHistory = [];
@@ -126,8 +130,6 @@ class PaijoAI {
   }
 
   async _ensureFinalReply(reply, systemPrompt) {
-    const MIN_RETRY_TEMPERATURE = 0.2;
-    const TEMPERATURE_REDUCTION = 0.2;
     let normalized = this._normalizeReply(reply);
     if (!this._looksLikeMetaReply(normalized)) return normalized;
 
@@ -135,14 +137,15 @@ class PaijoAI {
 Balas HANYA jawaban final untuk user.
 Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
 
-    const repaired = await this._call(
-      systemPrompt,
-      [...this.chatHistory, { role: 'user', content: repairInstruction }],
-      { temperature: Math.max(MIN_RETRY_TEMPERATURE, CONFIG.openrouter.temperature - TEMPERATURE_REDUCTION) }
-    );
-
-    normalized = this._normalizeReply(repaired);
-    if (!this._looksLikeMetaReply(normalized)) return normalized;
+    for (let attempt = 0; attempt < MAX_REPAIR_ATTEMPTS; attempt++) {
+      const repaired = await this._call(
+        systemPrompt,
+        [...this.chatHistory, { role: 'user', content: repairInstruction }],
+        { temperature: Math.max(MIN_RETRY_TEMPERATURE, CONFIG.openrouter.temperature - TEMPERATURE_REDUCTION) }
+      );
+      normalized = this._normalizeReply(repaired);
+      if (!this._looksLikeMetaReply(normalized)) return normalized;
+    }
 
     return 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!';
   }
