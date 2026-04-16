@@ -12,24 +12,23 @@ const state = {
 
 // ── BOOT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
-  // Bersihkan semua localStorage — JSONBin adalah satu-satunya storage
-  localStorage.clear();
-
   startTaglineRotation();
   createRain();
 
-  // Load data dari JSONBin
-  addChatMsg('system', '☁️ Memuat ingatan Paijo dari cloud...');
+  // Tampilkan loading, sembunyikan semua section lain
+  _showOnly('loadingSection');
+
+  // Tunggu JSONBin selesai — ini satu-satunya source of truth
   await memory.load();
 
-  // Cek apakah sudah ada userName tersimpan di JSONBin
+  // Setelah load selesai, baru putuskan tampilan apa
   if (memory.data?.userName) {
     state.userName = memory.data.userName;
     _showChat();
     _greetUser();
   } else {
-    // Belum kenal — tampilkan form kenalan
-    document.getElementById('nameSection').style.display = 'block';
+    _showOnly('nameSection');
+    document.getElementById('nameInput')?.focus();
   }
 
   // Enter key handlers
@@ -39,6 +38,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     ?.addEventListener('keydown', e => { if (e.key === 'Enter') onSendMessage(); });
 });
 
+// Sembunyikan semua section, tampilkan hanya yang diminta
+function _showOnly(sectionId) {
+  ['loadingSection','nameSection','chatSection','interactionSection']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = id === sectionId ? 'block' : 'none';
+    });
+}
+
 // ── ONBOARDING ────────────────────────────────
 async function onSetName() {
   const input = document.getElementById('nameInput');
@@ -47,7 +55,7 @@ async function onSetName() {
 
   state.userName = name;
   memory.setUserName(name);
-  await memory.save();   // simpan userName ke JSONBin segera
+  await memory.save(); // simpan userName ke JSONBin segera
 
   _showChat();
   showBubble(`Oalah... ${name}! Paijo senang kenal kamu! Wis ben!`);
@@ -55,10 +63,10 @@ async function onSetName() {
 }
 
 function _showChat() {
-  document.getElementById('nameSection').style.display        = 'none';
-  document.getElementById('chatSection').style.display        = 'block';
+  // Tampilkan chat + interaksi, sembunyikan loading & onboarding
+  _showOnly('chatSection');
   document.getElementById('interactionSection').style.display = 'block';
-  document.getElementById('footerName').textContent           = `Halo, ${state.userName}!`;
+  document.getElementById('footerName').textContent = `Halo, ${state.userName}!`;
 }
 
 function _greetUser() {
