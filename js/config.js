@@ -6,7 +6,7 @@ const CONFIG = {
   // AI
   openrouter: {
     apiKey: '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',
-    model: 'nvidia/nemotron-3-super-120b-a12b:free',
+    model: 'openrouter/free',
     url: 'https://openrouter.ai/api/v1/chat/completions',
     referer: 'https://redok07.github.io/paijo',
     title: 'Paijo - Wong Jowo Kampung',
