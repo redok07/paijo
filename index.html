@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAIJO - Wong Jowo Kampung</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- PARALLAX BG -->
+<div class="parallax-bg">
+  <div class="sky"></div>
+  <div class="clouds">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
+  <div class="mountains"></div>
+  <div class="trees">
+    <div class="tree t1"></div>
+    <div class="tree t2"></div>
+    <div class="tree t3"></div>
+  </div>
+  <div class="ground"></div>
+  <div class="rain-container" id="rainContainer"></div>
+</div>
+
+<!-- HEADER -->
+<header class="pixel-header">
+  <div class="header-title">🌾 PAIJO 🌾</div>
+  <div class="header-tagline" id="tagline">Wong Jowo Paling Pinter Se-Desa</div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- SPRITE SECTION -->
+  <section class="sprite-section">
+    <div class="mood-bar">
+      <span class="mood-label">Mood Paijo:</span>
+      <div class="mood-meter">
+        <div class="mood-fill" id="moodFill"></div>
+      </div>
+      <span class="mood-emoji" id="moodEmoji">😐</span>
+    </div>
+
+    <div class="sprite-container" id="spriteContainer">
+      <div class="sprite" id="paijo">
+        <div class="sprite-body">
+          <!-- Pixel art Paijo via CSS -->
+          <div class="paijo-pixel" id="paijoPixel"></div>
+        </div>
+        <div class="speech-bubble" id="speechBubble">
+          <span id="bubbleText">Lha iyo to... Kowe sopo?</span>
+        </div>
+      </div>
+      <div class="ground-deco">
+        <div class="grass g1"></div>
+        <div class="grass g2"></div>
+        <div class="grass g3"></div>
+        <div class="pohon-kelapa"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAME INPUT -->
+  <section class="name-section" id="nameSection">
+    <div class="pixel-card">
+      <p>🌾 Halo! Paijo pengen kenal dulu...</p>
+      <div class="input-row">
+        <input type="text" id="nameInput" placeholder="Jenengmu sopo?" maxlength="20" />
+        <button class="pixel-btn primary" onclick="setName()">Kenalan!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAT SECTION -->
+  <section class="chat-section" id="chatSection" style="display:none">
+
+    <!-- API KEY INPUT -->
+    <div class="api-key-box" id="apiKeyBox">
+      <p>🔑 Masukin OpenRouter API Key kamu (gratis, aman — tidak disimpan ke server)</p>
+      <div class="input-row">
+        <input type="password" id="apiKeyInput" placeholder="sk-or-..." />
+        <button class="pixel-btn primary" onclick="saveApiKey()">Simpen!</button>
+      </div>
+      <small>Dapet di: <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></small>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <!-- messages here -->
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ngomong opo ke Paijo..." onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button class="pixel-btn primary" onclick="sendMessage()">Kirim ➤</button>
+    </div>
+  </section>
+
+  <!-- INTERAKSI TOMBOL -->
+  <section class="interaction-section" id="interactionSection" style="display:none">
+    <h3 class="pixel-title">🎮 Interaksi</h3>
+    <div class="btn-grid">
+      <button class="pixel-btn action" onclick="giveKopi()">☕ Kasih Kopi</button>
+      <button class="pixel-btn action" onclick="mintaNasihat()">🧙 Minta Nasihat</button>
+      <button class="pixel-btn action" onclick="bikinKaget()">😱 Bikin Kaget</button>
+      <button class="pixel-btn action" onclick="toggleHujan()">🌧️ Hujan</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="pixel-footer">
+  <span>Made with 💛 | Paijo © 2025 | <span id="footerName"></span></span>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
