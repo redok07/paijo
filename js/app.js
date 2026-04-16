@@ -12,27 +12,25 @@ const state = {
 
 // ── BOOT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
-  // Bersihkan key lama dari localStorage — pakai config.js sebagai source of truth
-  localStorage.removeItem('paijoApiKey');
+  // Bersihkan semua localStorage — JSONBin adalah satu-satunya storage
+  localStorage.clear();
 
-  memory.init();
   startTaglineRotation();
   createRain();
 
-  // Restore saved user
-  try {
-    const saved = JSON.parse(localStorage.getItem('paijoUser') || 'null');
-    if (saved?.name) {
-      state.userName = saved.name;
-      // Langsung sembunyikan onboarding — jangan tunggu JSONBin
-      document.getElementById('nameSection').style.display = 'none';
-      document.getElementById('chatSection').style.display = 'block';
-      document.getElementById('interactionSection').style.display = 'block';
-      document.getElementById('footerName').textContent = `Halo, ${state.userName}!`;
-      // Load memory di background, update UI setelah selesai
-      memory.load(state.userName).then(() => _activateChat());
-    }
-  } catch (e) {}
+  // Load data dari JSONBin
+  addChatMsg('system', '☁️ Memuat ingatan Paijo dari cloud...');
+  await memory.load();
+
+  // Cek apakah sudah ada userName tersimpan di JSONBin
+  if (memory.data?.userName) {
+    state.userName = memory.data.userName;
+    _showChat();
+    _greetUser();
+  } else {
+    // Belum kenal — tampilkan form kenalan
+    document.getElementById('nameSection').style.display = 'block';
+  }
 
   // Enter key handlers
   document.getElementById('nameInput')
@@ -48,25 +46,33 @@ async function onSetName() {
   if (!name) return;
 
   state.userName = name;
-  localStorage.setItem('paijoUser', JSON.stringify({ name }));
-  await memory.load(name);
-  _activateChat();
+  memory.setUserName(name);
+  await memory.save();   // simpan userName ke JSONBin segera
+
+  _showChat();
   showBubble(`Oalah... ${name}! Paijo senang kenal kamu! Wis ben!`);
+  _greetUser();
 }
 
-function _activateChat() {
-  document.getElementById('nameSection').style.display       = 'none';
-  document.getElementById('chatSection').style.display       = 'block';
+function _showChat() {
+  document.getElementById('nameSection').style.display        = 'none';
+  document.getElementById('chatSection').style.display        = 'block';
   document.getElementById('interactionSection').style.display = 'block';
-  document.getElementById('footerName').textContent          = `Halo, ${state.userName}!`;
+  document.getElementById('footerName').textContent           = `Halo, ${state.userName}!`;
+}
 
+function _greetUser() {
   const isReturning = (memory.data?.totalMessages || 0) > 0;
   const factsCount  = memory.data?.facts?.length || 0;
 
-  addChatMsg('system',
-    `🌾 Paijo siap ngobrol dengan ${state.userName}!` +
-    (factsCount ? ` (🧠 Ingat ${factsCount} fakta tentang kamu)` : '')
-  );
+  // Hapus pesan "memuat..." sebelumnya
+  const chatBox = document.getElementById('chatBox');
+  const systemMsgs = chatBox.querySelectorAll('.chat-msg.system');
+  systemMsgs.forEach(el => el.remove());
+
+  if (factsCount > 0) {
+    addChatMsg('system', `🧠 Paijo ingat ${factsCount} fakta tentang kamu!`);
+  }
 
   addChatMsg('paijo',
     isReturning
@@ -116,10 +122,10 @@ async function onSendMessage() {
     // Setiap N pesan → ekstrak fakta (background, non-blocking)
     state.messageCount++;
     if (state.messageCount % CONFIG.factExtractionInterval === 0) {
-      ai.extractFacts(state.userName);  // fire and forget
+      ai.extractFacts(state.userName);
     }
 
-    // Auto-save jika ada perubahan
+    // Auto-save ke JSONBin
     if (memory.dirty) memory.save();
 
   } catch (err) {
@@ -144,6 +150,7 @@ function onGiveKopi() {
   changeMood(20);
   playSound('happy');
   memory.addFacts([`${state.userName} pernah kasih kopi ke Paijo — orangnya baik!`]);
+  if (memory.dirty) memory.save();
   setTimeout(() => setPaijoState(''), 3000);
 }
 
