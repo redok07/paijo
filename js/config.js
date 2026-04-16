@@ -26,6 +26,7 @@ const CONFIG = {
   maxChatHistory: 16,
   maxFacts: 100,
   maxSummaries: 20,
+  fallbackMetaReply: 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!',
 };
 
 // ============================================
@@ -116,6 +117,8 @@ ATURAN KETAT:
 - JANGAN abaikan pertanyaan user
 - JANGAN terlalu formal
 - JANGAN full bahasa Jawa
+- JANGAN tampilkan proses berpikir, analisis internal, atau kalimat meta (contoh: "user menanyakan...", "saya perlu...", "pertama, ...")
+- TULIS hanya jawaban final untuk user
 - GUNAKAN memori tentang user jika tersedia (lihat bagian MEMORI di bawah)`;
 
 const FACT_EXTRACT_PROMPT = `Dari percakapan ini, ekstrak fakta-fakta penting tentang user dalam Bahasa Indonesia.

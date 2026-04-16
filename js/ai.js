@@ -3,6 +3,10 @@
 // Depends on: config.js, memory.js
 // ============================================
 
+const MIN_RETRY_TEMPERATURE = 0.2;
+const TEMPERATURE_REDUCTION = 0.2;
+const MAX_RETRY_ATTEMPTS = 1;
+
 class PaijoAI {
   constructor() {
     this.chatHistory = [];
@@ -25,7 +29,8 @@ class PaijoAI {
       .replace(/{USERNAME}/g, userName)
       + memoryContext;
 
-    const reply = await this._call(systemPrompt, this.chatHistory);
+    const rawReply = await this._call(systemPrompt, this.chatHistory);
+    const reply = await this._ensureFinalReply(rawReply, systemPrompt);
     this.chatHistory.push({ role: 'assistant', content: reply });
     return reply;
   }
@@ -100,6 +105,53 @@ class PaijoAI {
 
     const data = await res.json();
     return data.choices?.[0]?.message?.content || 'Paijo bingung... Piye to iki...';
+  }
+
+  _normalizeReply(text) {
+    return String(text || '').trim().replace(/\n{3,}/g, '\n\n');
+  }
+
+  _getRetryTemperature() {
+    return Math.max(MIN_RETRY_TEMPERATURE, CONFIG.openrouter.temperature - TEMPERATURE_REDUCTION);
+  }
+
+  _looksLikeMetaReply(text) {
+    const t = this._normalizeReply(text).toLowerCase();
+    if (!t) return false;
+    const patterns = [
+      /\bokay,\s*the user is asking\b/,
+      /\bthe user is asking\b/,
+      /\bi need to (respond|answer|recall)\b/,
+      /\bfirst,\s*recall\b/,
+      /\bmust answer\b/,
+      /\bper rules\b/,
+      /\bas paijo,\s*i\b/,
+      /\bthe question:\b/,
+      /\buser menanyakan\b/,
+      /\bsaya perlu (menjawab|ingat|merespons)\b/,
+    ];
+    return patterns.some(p => p.test(t));
+  }
+
+  async _ensureFinalReply(reply, systemPrompt) {
+    let normalized = this._normalizeReply(reply);
+    if (!this._looksLikeMetaReply(normalized)) return normalized;
+
+    const repairInstruction = `Ulangi jawaban untuk pesan user terakhir.
+Balas HANYA jawaban final untuk user.
+Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
+
+    for (let retryAttempt = 0; retryAttempt < MAX_RETRY_ATTEMPTS; retryAttempt++) {
+      const repaired = await this._call(
+        systemPrompt,
+        [...this.chatHistory, { role: 'user', content: repairInstruction }],
+        { temperature: this._getRetryTemperature() }
+      );
+      normalized = this._normalizeReply(repaired);
+      if (!this._looksLikeMetaReply(normalized)) return normalized;
+    }
+
+    return CONFIG.fallbackMetaReply || 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!';
   }
 }
 
