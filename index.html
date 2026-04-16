@@ -48,7 +48,6 @@
     <div class="sprite-container" id="spriteContainer">
       <div class="sprite" id="paijo">
         <div class="sprite-body">
-          <!-- Pixel art Paijo via CSS -->
           <div class="paijo-pixel" id="paijoPixel"></div>
         </div>
         <div class="speech-bubble" id="speechBubble">
@@ -70,7 +69,7 @@
       <p>🌾 Halo! Paijo pengen kenal dulu...</p>
       <div class="input-row">
         <input type="text" id="nameInput" placeholder="Jenengmu sopo?" maxlength="20" />
-        <button class="pixel-btn primary" onclick="setName()">Kenalan!</button>
+        <button class="pixel-btn primary" onclick="onSetName()">Kenalan!</button>
       </div>
     </div>
   </section>
@@ -78,28 +77,8 @@
   <!-- CHAT SECTION -->
   <section class="chat-section" id="chatSection" style="display:none">
 
-    <!-- API KEY INPUT (hidden, key sudah tersedia) -->
-    <div class="api-key-box" id="apiKeyBox" style="display:none">
-      <p>🔑 Masukin OpenRouter API Key kamu (opsional — override default key)</p>
-      <div class="input-row">
-        <input type="password" id="apiKeyInput" placeholder="sk-or-..." />
-        <button class="pixel-btn primary" onclick="saveApiKey()">Simpen!</button>
-      </div>
-      <small>Dapet di: <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></small>
-    </div>
-
     <div class="chat-box" id="chatBox">
-      <!-- messages here -->
-    </div>
-
-    <!-- JSONBIN SETUP -->
-    <div class="jsonbin-setup-box" id="jsonbinSetupBox" style="display:none">
-      <p>☁️ Hubungkan JSONBin untuk simpan ingatan Paijo ke cloud</p>
-      <div class="input-row">
-        <input type="password" id="jsonbinKeyInput" placeholder="$2a$..." />
-        <button class="pixel-btn primary" onclick="saveJsonbinKey()">Hubungkan!</button>
-      </div>
-      <small>Dapet Master Key di: <a href="https://jsonbin.io/app/api-keys" target="_blank">jsonbin.io/app/api-keys</a></small>
+      <!-- messages rendered here -->
     </div>
 
     <!-- MEMORY STATUS -->
@@ -108,8 +87,8 @@
     </div>
 
     <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Ngomong opo ke Paijo..." onkeydown="if(event.key==='Enter') sendMessage()" />
-      <button class="pixel-btn primary" onclick="sendMessage()">Kirim ➤</button>
+      <input type="text" id="chatInput" placeholder="Ngomong opo ke Paijo..." />
+      <button class="pixel-btn primary" onclick="onSendMessage()">Kirim ➤</button>
     </div>
   </section>
 
@@ -117,10 +96,10 @@
   <section class="interaction-section" id="interactionSection" style="display:none">
     <h3 class="pixel-title">🎮 Interaksi</h3>
     <div class="btn-grid">
-      <button class="pixel-btn action" onclick="giveKopi()">☕ Kasih Kopi</button>
-      <button class="pixel-btn action" onclick="mintaNasihat()">🧙 Minta Nasihat</button>
-      <button class="pixel-btn action" onclick="bikinKaget()">😱 Bikin Kaget</button>
-      <button class="pixel-btn action" onclick="toggleHujan()">🌧️ Hujan</button>
+      <button class="pixel-btn action" onclick="onGiveKopi()">☕ Kasih Kopi</button>
+      <button class="pixel-btn action" onclick="onMintaNasihat()">🧙 Minta Nasihat</button>
+      <button class="pixel-btn action" onclick="onBikinKaget()">😱 Bikin Kaget</button>
+      <button class="pixel-btn action" onclick="onToggleHujan()">🌧️ Hujan</button>
     </div>
   </section>
 
@@ -131,6 +110,11 @@
   <span>Made with 💛 | Paijo © 2025 | <span id="footerName"></span></span>
 </footer>
 
-<script src="script.js"></script>
+<!-- JS modules — urutan penting: config → memory → ai → ui → app -->
+<script src="js/config.js"></script>
+<script src="js/memory.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
