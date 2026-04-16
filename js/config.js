@@ -5,7 +5,7 @@
 const CONFIG = {
   // AI
   openrouter: {
-    apiKey: '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',
+    apiKey: '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',
     model: 'nvidia/nemotron-3-super-120b-a12b:free',
     url: 'https://openrouter.ai/api/v1/chat/completions',
     referer: 'https://redok07.github.io/paijo',
