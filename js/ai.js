@@ -111,6 +111,10 @@ class PaijoAI {
     return String(text || '').trim().replace(/\n{3,}/g, '\n\n');
   }
 
+  _getRetryTemperature() {
+    return Math.max(MIN_RETRY_TEMPERATURE, CONFIG.openrouter.temperature - TEMPERATURE_REDUCTION);
+  }
+
   _looksLikeMetaReply(text) {
     const t = this._normalizeReply(text).toLowerCase();
     if (!t) return false;
@@ -137,11 +141,11 @@ class PaijoAI {
 Balas HANYA jawaban final untuk user.
 Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
 
-    for (let attempt = 0; attempt < MAX_REPAIR_ATTEMPTS; attempt++) {
+    for (let repairAttempt = 0; repairAttempt < MAX_REPAIR_ATTEMPTS; repairAttempt++) {
       const repaired = await this._call(
         systemPrompt,
         [...this.chatHistory, { role: 'user', content: repairInstruction }],
-        { temperature: Math.max(MIN_RETRY_TEMPERATURE, CONFIG.openrouter.temperature - TEMPERATURE_REDUCTION) }
+        { temperature: this._getRetryTemperature() }
       );
       normalized = this._normalizeReply(repaired);
       if (!this._looksLikeMetaReply(normalized)) return normalized;
