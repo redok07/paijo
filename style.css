@@ -510,6 +510,45 @@ input:focus { border-color: var(--primary); background: #fff; }
 @keyframes bounce { from { transform:scale(1); } to { transform:scale(1.1); } }
 @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
+/* ===== MEMORY BAR ===== */
+.memory-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111;
+  border: 2px solid #333;
+  padding: 5px 10px;
+  margin-top: 6px;
+  border-radius: 2px;
+}
+#memoryStatus {
+  font-size: 7px;
+  color: #4a9eda;
+}
+.pixel-btn.mini {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  padding: 4px 7px;
+  background: #1a2a3a;
+  color: #4a9eda;
+  border: 2px solid #4a9eda;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.pixel-btn.mini:hover { background: #2a3a4a; }
+
+/* ===== JSONBIN SETUP ===== */
+.jsonbin-setup-box {
+  background: #0a1628;
+  border: 3px solid #4a9eda;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+.jsonbin-setup-box p { color: #eee; font-size: 8px; margin-bottom: 10px; line-height: 1.8; }
+.jsonbin-setup-box small { color: #888; font-size: 7px; margin-top: 6px; display: block; }
+.jsonbin-setup-box a { color: #4a9eda; }
+
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #222; }

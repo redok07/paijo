@@ -92,6 +92,22 @@
       <!-- messages here -->
     </div>
 
+    <!-- JSONBIN SETUP -->
+    <div class="jsonbin-setup-box" id="jsonbinSetupBox" style="display:none">
+      <p>☁️ Hubungkan JSONBin untuk simpan ingatan Paijo ke cloud</p>
+      <div class="input-row">
+        <input type="password" id="jsonbinKeyInput" placeholder="$2a$..." />
+        <button class="pixel-btn primary" onclick="saveJsonbinKey()">Hubungkan!</button>
+      </div>
+      <small>Dapet Master Key di: <a href="https://jsonbin.io/app/api-keys" target="_blank">jsonbin.io/app/api-keys</a></small>
+    </div>
+
+    <!-- MEMORY STATUS -->
+    <div class="memory-bar">
+      <span id="memoryStatus">🧠 Ingatan: belum dimuat</span>
+      <button class="pixel-btn mini" onclick="toggleJsonbinSetup()">☁️ Cloud</button>
+    </div>
+
     <div class="chat-input-row">
       <input type="text" id="chatInput" placeholder="Ngomong opo ke Paijo..." onkeydown="if(event.key==='Enter') sendMessage()" />
       <button class="pixel-btn primary" onclick="sendMessage()">Kirim ➤</button>
@@ -116,6 +132,7 @@
   <span>Made with 💛 | Paijo © 2025 | <span id="footerName"></span></span>
 </footer>
 
+<script src="memory.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
