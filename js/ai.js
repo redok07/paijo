@@ -126,6 +126,8 @@ class PaijoAI {
   }
 
   async _ensureFinalReply(reply, systemPrompt) {
+    const MIN_RETRY_TEMPERATURE = 0.2;
+    const TEMPERATURE_REDUCTION = 0.2;
     let normalized = this._normalizeReply(reply);
     if (!this._looksLikeMetaReply(normalized)) return normalized;
 
@@ -136,7 +138,7 @@ Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
     const repaired = await this._call(
       systemPrompt,
       [...this.chatHistory, { role: 'user', content: repairInstruction }],
-      { temperature: Math.max(0.2, CONFIG.openrouter.temperature - 0.2) }
+      { temperature: Math.max(MIN_RETRY_TEMPERATURE, CONFIG.openrouter.temperature - TEMPERATURE_REDUCTION) }
     );
 
     normalized = this._normalizeReply(repaired);

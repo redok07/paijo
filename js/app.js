@@ -10,6 +10,9 @@ const state = {
   messageCount: 0,
 };
 
+const SPLASH_DISPLAY_DURATION_MS = 1200;
+const SPLASH_FADE_OUT_DURATION_MS = 360;
+
 // ── BOOT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
   await _playSplash();
@@ -43,9 +46,9 @@ async function _playSplash() {
   const splash = document.getElementById('splashScreen');
   if (!splash) return;
   splash.classList.add('visible');
-  await new Promise(resolve => setTimeout(resolve, 1200));
+  await new Promise(resolve => setTimeout(resolve, SPLASH_DISPLAY_DURATION_MS));
   splash.classList.add('hide');
-  await new Promise(resolve => setTimeout(resolve, 360));
+  await new Promise(resolve => setTimeout(resolve, SPLASH_FADE_OUT_DURATION_MS));
   splash.remove();
 }
 
