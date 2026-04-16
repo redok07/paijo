@@ -21,8 +21,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     const saved = JSON.parse(localStorage.getItem('paijoUser') || 'null');
     if (saved?.name) {
       state.userName = saved.name;
-      await memory.load(state.userName);
-      _activateChat();
+      // Langsung sembunyikan onboarding — jangan tunggu JSONBin
+      document.getElementById('nameSection').style.display = 'none';
+      document.getElementById('chatSection').style.display = 'block';
+      document.getElementById('interactionSection').style.display = 'block';
+      document.getElementById('footerName').textContent = `Halo, ${state.userName}!`;
+      // Load memory di background, update UI setelah selesai
+      memory.load(state.userName).then(() => _activateChat());
     }
   } catch (e) {}
 
