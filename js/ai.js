@@ -25,7 +25,8 @@ class PaijoAI {
       .replace(/{USERNAME}/g, userName)
       + memoryContext;
 
-    const reply = await this._call(systemPrompt, this.chatHistory);
+    const rawReply = await this._call(systemPrompt, this.chatHistory);
+    const reply = await this._ensureFinalReply(rawReply, systemPrompt);
     this.chatHistory.push({ role: 'assistant', content: reply });
     return reply;
   }
@@ -100,6 +101,48 @@ class PaijoAI {
 
     const data = await res.json();
     return data.choices?.[0]?.message?.content || 'Paijo bingung... Piye to iki...';
+  }
+
+  _normalizeReply(text) {
+    return String(text || '').trim().replace(/\n{3,}/g, '\n\n');
+  }
+
+  _looksLikeMetaReply(text) {
+    const t = this._normalizeReply(text).toLowerCase();
+    if (!t) return false;
+    const patterns = [
+      /\bokay,\s*the user is asking\b/,
+      /\bthe user is asking\b/,
+      /\bi need to (respond|answer|recall)\b/,
+      /\bfirst,\s*recall\b/,
+      /\bmust answer\b/,
+      /\bper rules\b/,
+      /\bas paijo,\s*i\b/,
+      /\bthe question:\b/,
+      /\buser menanyakan\b/,
+      /\bsaya perlu (menjawab|ingat|merespons)\b/,
+    ];
+    return patterns.some(p => p.test(t));
+  }
+
+  async _ensureFinalReply(reply, systemPrompt) {
+    let normalized = this._normalizeReply(reply);
+    if (!this._looksLikeMetaReply(normalized)) return normalized;
+
+    const repairInstruction = `Ulangi jawaban untuk pesan user terakhir.
+Balas HANYA jawaban final untuk user.
+Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
+
+    const repaired = await this._call(
+      systemPrompt,
+      [...this.chatHistory, { role: 'user', content: repairInstruction }],
+      { temperature: Math.max(0.2, CONFIG.openrouter.temperature - 0.2) }
+    );
+
+    normalized = this._normalizeReply(repaired);
+    if (!this._looksLikeMetaReply(normalized)) return normalized;
+
+    return 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!';
   }
 }
 

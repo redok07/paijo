@@ -12,6 +12,7 @@ const state = {
 
 // ── BOOT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
+  await _playSplash();
   startTaglineRotation();
   createRain();
 
@@ -37,6 +38,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('chatInput')
     ?.addEventListener('keydown', e => { if (e.key === 'Enter') onSendMessage(); });
 });
+
+async function _playSplash() {
+  const splash = document.getElementById('splashScreen');
+  if (!splash) return;
+  splash.classList.add('visible');
+  await new Promise(resolve => setTimeout(resolve, 1200));
+  splash.classList.add('hide');
+  await new Promise(resolve => setTimeout(resolve, 360));
+  splash.remove();
+}
 
 // Sembunyikan semua section, tampilkan hanya yang diminta
 function _showOnly(sectionId) {
