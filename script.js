@@ -108,7 +108,8 @@ ATURAN KETAT:
 // ============================================
 // MEMORY SYSTEM
 // ============================================
-const JSONBIN_MASTER_KEY = '__JSONBIN_KEY__'; // diisi user via settings
+const JSONBIN_MASTER_KEY = '$2a$10$zGbTMWBHSakNoFqCEFRqceKBCIBtJ6U0ujpRhKKOOAwpmn9iba2M6';
+const JSONBIN_DEFAULT_BIN = '69e100b736566621a8be220f';
 const JSONBIN_BASE = 'https://api.jsonbin.io/v3/b';
 
 const paijoMemory = {
@@ -121,8 +122,9 @@ const paijoMemory = {
   init() {
     this.userId = localStorage.getItem('paijoUserId') || this._genId();
     localStorage.setItem('paijoUserId', this.userId);
-    this.binId = localStorage.getItem('paijoBinId') || null;
-    this.masterKey = localStorage.getItem('paijoJsonbinKey') || null;
+    // Pakai default key & bin, bisa di-override via localStorage
+    this.masterKey = localStorage.getItem('paijoJsonbinKey') || JSONBIN_MASTER_KEY;
+    this.binId = localStorage.getItem('paijoBinId') || JSONBIN_DEFAULT_BIN;
   },
 
   _genId() {
