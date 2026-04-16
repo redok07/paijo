@@ -12,6 +12,9 @@ const state = {
 
 // ── BOOT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
+  // Bersihkan key lama dari localStorage — pakai config.js sebagai source of truth
+  localStorage.removeItem('paijoApiKey');
+
   memory.init();
   startTaglineRotation();
   createRain();

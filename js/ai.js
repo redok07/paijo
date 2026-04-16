@@ -6,6 +6,8 @@
 class PaijoAI {
   constructor() {
     this.chatHistory = [];
+    // Selalu pakai key dari config.js (hardcoded)
+    // localStorage override hanya jika user eksplisit set via UI
     this.apiKey = CONFIG.openrouter.apiKey;
   }
 
