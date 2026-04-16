@@ -5,7 +5,7 @@
 
 const MIN_RETRY_TEMPERATURE = 0.2;
 const TEMPERATURE_REDUCTION = 0.2;
-const MAX_REPAIR_ATTEMPTS = 1;
+const MAX_RETRY_ATTEMPTS = 1;
 
 class PaijoAI {
   constructor() {
@@ -141,7 +141,7 @@ class PaijoAI {
 Balas HANYA jawaban final untuk user.
 Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
 
-    for (let repairAttempt = 0; repairAttempt < MAX_REPAIR_ATTEMPTS; repairAttempt++) {
+    for (let retryAttempt = 0; retryAttempt < MAX_RETRY_ATTEMPTS; retryAttempt++) {
       const repaired = await this._call(
         systemPrompt,
         [...this.chatHistory, { role: 'user', content: repairInstruction }],
