@@ -17,7 +17,7 @@ const CONFIG = {
   // JSONBin
   jsonbin: {
     masterKey: '$2a$10$zGbTMWBHSakNoFqCEFRqceKBCIBtJ6U0ujpRhKKOOAwpmn9iba2M6',
-    defaultBinId: '69e100b736566621a8be220f',
+    defaultBinId: '69e1032a856a6821893f3f2c',
     baseUrl: 'https://api.jsonbin.io/v3/b',
   },
 
