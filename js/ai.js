@@ -151,7 +151,7 @@ Jangan tampilkan analisis internal, langkah berpikir, atau kalimat meta.`;
       if (!this._looksLikeMetaReply(normalized)) return normalized;
     }
 
-    return 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!';
+    return CONFIG.fallbackMetaReply || 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!';
   }
 }
 

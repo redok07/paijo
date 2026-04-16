@@ -26,6 +26,7 @@ const CONFIG = {
   maxChatHistory: 16,
   maxFacts: 100,
   maxSummaries: 20,
+  fallbackMetaReply: 'Maaf, Paijo tadi sempat ngelantur. Coba tanya lagi ya, lha iyo to!',
 };
 
 // ============================================

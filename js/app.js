@@ -11,7 +11,7 @@ const state = {
 };
 
 const SPLASH_DISPLAY_DURATION_MS = 1200;
-const SPLASH_FADE_OUT_DURATION_MS = 360;
+const SPLASH_FADE_OUT_DURATION_MS = 350;
 
 // ── BOOT ──────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
